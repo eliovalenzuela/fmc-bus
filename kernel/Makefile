@@ -5,7 +5,7 @@ ccflags-y += -I$M/include
 
 obj-m = fmc.o
 obj-m += fmc-fakedev.o
-obj-m += fmc-trivial.o
+obj-$(CONFIG_GPIOLIB) += fmc-trivial.o
 obj-m += fmc-write-eeprom.o
 obj-m += fmc-chardev.o
 
