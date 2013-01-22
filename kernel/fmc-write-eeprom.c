@@ -13,6 +13,7 @@
 #include <linux/init.h>
 #include <linux/fmc.h>
 #include <asm/unaligned.h>
+#include "for-2.6.24.h"
 
 /*
  * This module uses the firmware loader to program the whole or part
