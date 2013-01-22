@@ -13,6 +13,8 @@
 #include <linux/fmc.h>
 #include <linux/fmc-sdb.h>
 
+#include "for-2.6.24.h"
+
 static int fmc_must_dump_eeprom;
 module_param_named(dump_eeprom, fmc_must_dump_eeprom, int, 0644);
 static int fmc_must_dump_sdb;

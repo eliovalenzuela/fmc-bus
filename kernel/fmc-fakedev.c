@@ -14,6 +14,8 @@
 #include <linux/err.h>
 #include <linux/fmc.h>
 
+#include "for-2.6.24.h"
+
 #define FF_EEPROM_SIZE		8192	/* The standard eeprom size */
 #define FF_MAX_MEZZANINES	4	/* Fakes a multi-mezzanine carrier */
 

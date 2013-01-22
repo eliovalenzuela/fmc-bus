@@ -13,6 +13,7 @@
 #include <linux/init.h>
 #include <linux/device.h>
 #include <linux/fmc.h>
+#include "for-2.6.24.h"
 
 static int fmc_check_version(unsigned long version, const char *name)
 {
@@ -78,6 +79,7 @@ static void fmc_release(struct device *dev)
  * The eeprom is exported in sysfs, through a binary attribute
  */
 
+#ifndef FMC_NO_SYSFS_EEPROM
 static ssize_t fmc_read_eeprom(struct file *file, struct kobject *kobj,
                            struct bin_attribute *bin_attr,
                            char *buf, loff_t off, size_t count)
@@ -104,6 +106,7 @@ static struct bin_attribute fmc_eeprom_attr = {
 	.size = 8192, /* more or less standard */
 	.read = fmc_read_eeprom,
 };
+#endif /* FMC_NO_SYSFS_EEPROM */
 
 /*
  * Functions for client modules follow
@@ -214,10 +217,12 @@ int fmc_device_register_n(struct fmc_device **devs, int n)
 		ret = device_add(&fmc->dev);
 		if (ret < 0) {
 			dev_err(fmc->hwdev, "Slot %i: Failed in registering "
-				"\"%s\"\n", fmc->slot_id, fmc->dev.kobj.name);
+				"\"%s\"\n", fmc->slot_id, dev_name(&fmc->dev));
 			goto out;
 		}
+#ifndef FMC_NO_SYSFS_EEPROM
 		ret = sysfs_create_bin_file(&fmc->dev.kobj, &fmc_eeprom_attr);
+#endif
 		if (ret < 0) {
 			dev_err(&fmc->dev, "Failed in registering eeprom\n");
 			goto out1;
@@ -236,7 +241,9 @@ out:
 
 	kfree(devarray);
 	for (i--; i >= 0; i--) {
+#ifndef FMC_NO_SYSFS_EEPROM
 		sysfs_remove_bin_file(&devs[i]->dev.kobj, &fmc_eeprom_attr);
+#endif
 		device_del(&devs[i]->dev);
 		fmc_free_id_info(devs[i]);
 		put_device(&devs[i]->dev);
@@ -265,7 +272,9 @@ void fmc_device_unregister_n(struct fmc_device **devs, int n)
 	for (i = 0; i < n; i++) {
 		if (devs[i]->flags == FMC_DEVICE_NO_MEZZANINE)
 			continue;
+#ifndef FMC_NO_SYSFS_EEPROM
 		sysfs_remove_bin_file(&devs[i]->dev.kobj, &fmc_eeprom_attr);
+#endif
 		device_del(&devs[i]->dev);
 		fmc_free_id_info(devs[i]);
 		put_device(&devs[i]->dev);
