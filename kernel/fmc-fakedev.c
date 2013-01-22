@@ -12,6 +12,8 @@
 #include <linux/workqueue.h>
 #include <linux/fmc.h>
 
+#include "for-2.6.24.h"
+
 static char *ff_eeprom;
 module_param_named(eeprom, ff_eeprom, charp, 0444);
 

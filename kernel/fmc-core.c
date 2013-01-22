@@ -13,6 +13,7 @@
 #include <linux/init.h>
 #include <linux/device.h>
 #include <linux/fmc.h>
+#include "for-2.6.24.h"
 
 static int fmc_check_version(unsigned long version, const char *name)
 {
@@ -73,7 +74,7 @@ static void __fmc_release(struct device *dev){ }
 /* This is needed as parent for our devices and dir in sysfs */
 struct device fmc_bus = {
 	.release = __fmc_release,
-	.init_name = "fmc",
+	/* We can't set init_name, becase 2.6.26 and earlier miss it */
 };
 
 /*
@@ -174,7 +175,7 @@ int fmc_device_register_n(struct fmc_device *fmcs, int n)
 		ret = device_add(&fmc->dev);
 		if (ret < 0) {
 			dev_err(fmc->hwdev, "Failed in registering \"%s\"\n",
-				fmc->dev.kobj.name);
+				dev_name(&fmc->dev));
 			fmc_free_id_info(fmc);
 			goto out;
 		}
@@ -193,7 +194,6 @@ out:
 	kfree(fmcs->devarray);
 	for (i = 0, fmc = fmcs; i < n; i++, fmc++)
 		fmc->devarray = NULL;
-	fmc_free_id_info(fmc);
 	return ret;
 
 }
@@ -235,6 +235,7 @@ static int fmc_init(void)
 {
 	int err;
 
+	dev_set_name(&fmc_bus, "fmc");
 	err = device_register(&fmc_bus);
 	if (err)
 		return err;

@@ -16,6 +16,7 @@
 #include <linux/spinlock.h>
 #include <linux/fmc.h>
 #include <asm/uaccess.h>
+#include "for-2.6.24.h"
 
 static LIST_HEAD(fc_devices);
 static DEFINE_SPINLOCK(fc_lock);
