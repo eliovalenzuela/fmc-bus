@@ -1,3 +1,4 @@
+Module.markers
 *.ko
 Module.symvers
 modules.order
