@@ -207,7 +207,7 @@ static inline void fmc_writel(struct fmc_device *fmc, uint32_t val, int off)
 }
 
 /* pci-like naming */
-static inline void *fmc_get_drvdata(const struct fmc_device *fmc)
+static inline void *fmc_get_drvdata(struct fmc_device *fmc)
 {
 	return dev_get_drvdata(&fmc->dev);
 }
