@@ -1,5 +1,5 @@
 /*
- * This is version 1.0 of sdb.h, as included the specification v1.0
+ * This is the official version 1.1 of sdb.h
  */
 #ifndef __SDB_H__
 #define __SDB_H__
@@ -47,19 +47,21 @@ struct sdb_component {
 
 /* Type of the SDB record */
 enum sdb_record_type {
-	sdb_type_interconnect = 0x00,
-	sdb_type_device       = 0x01,
-	sdb_type_bridge       = 0x02,
-	sdb_type_integration  = 0x80,
-	sdb_type_empty        = 0xFF,
+	sdb_type_interconnect	= 0x00,
+	sdb_type_device		= 0x01,
+	sdb_type_bridge		= 0x02,
+	sdb_type_integration	= 0x80,
+	sdb_type_repo_url	= 0x81,
+	sdb_type_synthesis	= 0x82,
+	sdb_type_empty		= 0xFF,
 };
 
 /* Type 0: interconnect (first of the array)
  *
  * sdb_records is the length of the table including this first
- *  record, version is 1. The bus type is enumerated later.
+ * record, version is 1. The bus type is enumerated later.
  */
-#define				SDB_MAGIC 	0x5344422d /* "SDB-" */
+#define				SDB_MAGIC	0x5344422d /* "SDB-" */
 struct sdb_interconnect {
 	uint32_t		sdb_magic;	/* 0x00-0x03 */
 	uint16_t		sdb_records;	/* 0x04-0x05 */
@@ -102,10 +104,33 @@ struct sdb_integration {
 	struct sdb_product	product;	/* 0x08-0x3f */
 };
 
+/* Type 0x81: Top module repository url
+ *
+ * again, an informative field that software can ignore
+ */
+struct sdb_repo_url {
+	uint8_t			repo_url[63];	/* 0x00-0x3e */
+	uint8_t			record_type;	/* 0x3f */
+};
+
+/* Type 0x82: Synthesis tool information
+ *
+ * this informative record
+ */
+struct sdb_synthesis {
+	uint8_t			syn_name[16];	/* 0x00-0x0f */
+	uint8_t			commit_id[16];	/* 0x10-0x1f */
+	uint8_t			tool_name[8];	/* 0x20-0x27 */
+	uint32_t		tool_version;	/* 0x28-0x2b */
+	uint32_t		date;		/* 0x2c-0x2f */
+	uint8_t			user_name[15];	/* 0x30-0x3e */
+	uint8_t			record_type;	/* 0x3f */
+};
+
 /* Type 0xff: empty
  *
  * this allows keeping empty slots during development,
- * so they can be filled later with minimal effort and
+ * so they can be filled later with minimal efforts and
  * no misleading description is ever shipped -- hopefully.
  * It can also be used to pad a table to a desired length.
  */
@@ -114,17 +139,21 @@ struct sdb_empty {
 	uint8_t			record_type;	/* 0x3f */
 };
 
-/* The type of bus, for bus-specific flags (currently only Wishbone) */
+/* The type of bus, for bus-specific flags */
 enum sdb_bus_type {
-	sdb_wishbone = 0x00
+	sdb_wishbone = 0x00,
+	sdb_data     = 0x01,
 };
 
-#define SDB_WB_WIDTH_MASK		0x0f
-#define SDB_WB_ACCESS8		0x01
-#define SDB_WB_ACCESS16		0x02
-#define SDB_WB_ACCESS32		0x04
-#define SDB_WB_ACCESS64		0x08
+#define SDB_WB_WIDTH_MASK	0x0f
+#define SDB_WB_ACCESS8			0x01
+#define SDB_WB_ACCESS16			0x02
+#define SDB_WB_ACCESS32			0x04
+#define SDB_WB_ACCESS64			0x08
+#define SDB_WB_LITTLE_ENDIAN	0x80
 
-#define SDB_WB_LITTLE_ENDIAN		0x80
+#define SDB_DATA_READ		0x04
+#define SDB_DATA_WRITE		0x02
+#define SDB_DATA_EXEC		0x01
 
 #endif /* __SDB_H__ */
