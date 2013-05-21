@@ -150,7 +150,7 @@ static int fc_probe(struct fmc_device *fmc)
 		list_add(&fc->list, &fc_devices);
 	}
 	spin_unlock(&fc_lock);
-	dev_info(fc->fmc->hwdev, "Created misc device \"%s\"\n",
+	dev_info(&fc->fmc->dev, "Created misc device \"%s\"\n",
 		 fc->misc.name);
 	return ret;
 }
@@ -163,7 +163,7 @@ static int fc_remove(struct fmc_device *fmc)
 		if (fc->fmc == fmc)
 			break;
 	if (fc->fmc != fmc) {
-		dev_err(fmc->hwdev, "remove called but not found\n");
+		dev_err(&fmc->dev, "remove called but not found\n");
 		return -ENODEV;
 	}
 

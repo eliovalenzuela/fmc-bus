@@ -348,7 +348,7 @@ registration:
 @item @t{fpga_base}: the I/O memory address (may be NULL).
 @item @t{slot_id}: the index of this slot (starting from zero).
 @item @t{memlen}: if @t{fpga_base} is valid, the length of I/O memory.
-@item @t{hwdev}: to be used in @i{dev_err()} calls.
+@item @t{hwdev}: to be used in some @i{dev_err()} calls.
 @item @t{device_id}: a slot-specific unique integer number.
 
 @end itemize
@@ -1073,21 +1073,14 @@ Pretty often, the mezzanine drivers need to register a new device of
 some kind: a network card, an input device, or something else.
 Several mezzanines may be installed in the same host computer, and we
 need a way to tell which is which: using sequential numbering is not
-reliable. The problem for diagnostics is already solved by the
-@i{hwdev} field in the device structure: mezzanine drivers use
-@code{dev_err(fmc->hwdev)} so the message includes proper identifiers
-(e.g. the bus and slot numbers for PCI cards).
+reliable.
 
 When we moved the @i{fine-delay} driver from being a @sc{spec}-only driver
 to a mezzanine @i{fmc-bus} driver, we found we needed an identifier to
 register our top-level device (here, a @sc{zio} driver).  The right
 solution to this problems is for carrier drivers to already spell out
 an identifier in the @code{fmc_device} structure, so mezzanine drivers
-can use it.  This requires a version change.
-
-@b{Note:} this change is not currently active, we are waiting to find
-other issues and cluster all required changes in a single version
-bump.
+can use it.  This required a version change.
 
 Drivers designed to work with an older versions of @i{fmc-bus} can
 just be recompiled: they won't exploit the new feature but they will

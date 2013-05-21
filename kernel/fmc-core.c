@@ -149,7 +149,8 @@ int fmc_device_register_n(struct fmc_device **devs, int n)
 	for (i = 0; i < n; i++) {
 		fmc = devarray[i];
 		if (!fmc->hwdev) {
-			pr_err("%s: device has no hwdev pointer\n", __func__);
+			pr_err("%s: device nr. %i has no hwdev pointer\n",
+			       __func__, i);
 			return -EINVAL;
 		}
 		if (fmc->flags == FMC_DEVICE_NO_MEZZANINE) {
@@ -158,17 +159,20 @@ int fmc_device_register_n(struct fmc_device **devs, int n)
 			continue;
 		}
 		if (!fmc->eeprom) {
-			dev_err(fmc->hwdev, "no eeprom provided to fmc bus\n");
+			dev_err(fmc->hwdev, "no eeprom provided for slot %i\n",
+				fmc->slot_id);
 			ret = -EINVAL;
 		}
 		if (!fmc->eeprom_addr) {
-			dev_err(fmc->hwdev, "eeprom_addr must be set\n");
+			dev_err(fmc->hwdev, "no eeprom_addr for slot %i\n",
+				fmc->slot_id);
 			ret = -EINVAL;
 		}
 		if (!fmc->carrier_name || !fmc->carrier_data || \
 		    !fmc->device_id) {
 			dev_err(fmc->hwdev,
-				"carrier name, data or dev_id not set\n");
+				"deivce nr %i: carrier name, "
+				"data or dev_id not set\n", i);
 			ret = -EINVAL;
 		}
 		if (ret)
@@ -208,13 +212,13 @@ int fmc_device_register_n(struct fmc_device **devs, int n)
 				     device_id);
 		ret = device_add(&fmc->dev);
 		if (ret < 0) {
-			dev_err(fmc->hwdev, "Failed in registering \"%s\"\n",
-				fmc->dev.kobj.name);
+			dev_err(fmc->hwdev, "Slot %i: Failed in registering "
+				"\"%s\"\n", fmc->slot_id, fmc->dev.kobj.name);
 			goto out;
 		}
 		ret = sysfs_create_bin_file(&fmc->dev.kobj, &fmc_eeprom_attr);
 		if (ret < 0) {
-			dev_err(fmc->hwdev, "Failed in registering eeprom\n");
+			dev_err(&fmc->dev, "Failed in registering eeprom\n");
 			goto out1;
 		}
 		/* This device went well, give information to the user */

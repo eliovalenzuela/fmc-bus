@@ -49,8 +49,8 @@ void fmc_dump_eeprom(const struct fmc_device *fmc)
 	if (!fmc_must_dump_eeprom)
 		return;
 
-	pr_info("FMC: mezzanine %i: %s on %s\n", fmc->slot_id,
-	       dev_name(fmc->hwdev), fmc->carrier_name);
+	pr_info("FMC: %s (%s), slot %i, device %s\n", dev_name(fmc->hwdev),
+		fmc->carrier_name, fmc->slot_id, dev_name(&fmc->dev));
 	pr_info("FMC: dumping eeprom 0x%x (%i) bytes\n", fmc->eeprom_len,
 	       fmc->eeprom_len);
 
@@ -87,8 +87,8 @@ void fmc_dump_sdb(const struct fmc_device *fmc)
 	 *
 	 * So, lazily, just dump the top-level array
 	 */
-	pr_info("FMC: mezzanine %i: %s on %s\n", fmc->slot_id,
-	       dev_name(fmc->hwdev), fmc->carrier_name);
+	pr_info("FMC: %s (%s), slot %i, device %s\n", dev_name(fmc->hwdev),
+		fmc->carrier_name, fmc->slot_id, dev_name(&fmc->dev));
 	pr_info("FMC: poor dump of sdb first level:\n");
 
 	len = fmc->sdb->len * sizeof(union sdb_record);

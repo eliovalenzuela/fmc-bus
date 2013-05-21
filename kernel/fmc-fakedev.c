@@ -101,7 +101,7 @@ static int ff_reprogram(struct fmc_device *fmc, struct fmc_driver *drv,
 	}
 
 	dev_info(&fmc->dev, "reprogramming with %s\n", gw);
-	ret = request_firmware(&fw, gw, fmc->hwdev);
+	ret = request_firmware(&fw, gw, &fmc->dev);
 	if (ret < 0) {
 		dev_warn(&fmc->dev, "request firmware \"%s\": error %i\n",
 			 gw, ret);

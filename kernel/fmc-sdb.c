@@ -140,7 +140,7 @@ int fmc_reprogram(struct fmc_device *fmc, struct fmc_driver *d, char *gw,
 	/* We are required to find SDB at a given offset */
 	ret = fmc_scan_sdb_tree(fmc, sdb_entry);
 	if (ret < 0) {
-		dev_err(fmc->hwdev, "Can't find SDB at address 0x%x\n",
+		dev_err(&fmc->dev, "Can't find SDB at address 0x%x\n",
 			sdb_entry);
 		return -ENODEV;
 	}
@@ -166,7 +166,7 @@ static void __fmc_show_sdb_tree(const struct fmc_device *fmc,
 		base = 0;
 		for (ap = arr; ap; ap = ap->parent)
 			base += ap->baseaddr;
-		dev_info(fmc->hwdev, "SDB: ");
+		dev_info(&fmc->dev, "SDB: ");
 
 		for (j = 0; j < level; j++)
 			printk("   ");
