@@ -155,6 +155,11 @@ int fmc_device_register_n(struct fmc_device **devs, int n)
 			pr_err("%s: device has no hwdev pointer\n", __func__);
 			return -EINVAL;
 		}
+		if (fmc->flags == FMC_DEVICE_NO_MEZZANINE) {
+			dev_info(fmc->hwdev, "absent mezzanine in slot %d\n",
+				 fmc->slot_id);
+			continue;
+		}
 		if (!fmc->eeprom) {
 			dev_err(fmc->hwdev, "no eeprom provided to fmc bus\n");
 			ret = -EINVAL;
@@ -181,6 +186,10 @@ int fmc_device_register_n(struct fmc_device **devs, int n)
 	/* Validation is ok. Now init and register the devices */
 	for (i = 0; i < n; i++) {
 		fmc = devarray[i];
+
+		if (fmc->flags == FMC_DEVICE_NO_MEZZANINE)
+			continue; /* dev_info already done above */
+
 		fmc->nr_slots = n; /* each slot must know how many are there */
 		fmc->devarray = devarray;
 
@@ -256,6 +265,8 @@ void fmc_device_unregister_n(struct fmc_device **devs, int n)
 	kfree(devs[0]->devarray);
 
 	for (i = 0; i < n; i++) {
+		if (devs[i]->flags == FMC_DEVICE_NO_MEZZANINE)
+			continue;
 #ifndef FMC_NO_SYSFS_EEPROM
 		sysfs_remove_bin_file(&devs[i]->dev.kobj, &fmc_eeprom_attr);
 #endif
