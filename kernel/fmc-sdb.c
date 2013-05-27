@@ -166,7 +166,7 @@ static void __fmc_show_sdb_tree(const struct fmc_device *fmc,
 		base = 0;
 		for (ap = arr; ap; ap = ap->parent)
 			base += ap->baseaddr;
-		dev_info(&fmc->dev, "SDB: ");
+		dev_info((struct device *)&fmc->dev, "SDB: ");
 
 		for (j = 0; j < level; j++)
 			printk("   ");

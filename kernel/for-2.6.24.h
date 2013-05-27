@@ -12,7 +12,7 @@ static inline struct delayed_work *to_delayed_work(struct work_struct *work)
 /* dev_name() appeared in v2.6.26-rc1 */
 /* dev_set_name() appeared in v2.6.26-rc6 */
 #if LINUX_VERSION_CODE < KERNEL_VERSION(2,6,26)
-static inline const char *dev_name(struct device *dev)
+static inline const char *dev_name(const struct device *dev)
 {
         return kobject_name(&dev->kobj);
 }
