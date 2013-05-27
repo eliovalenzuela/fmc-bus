@@ -151,7 +151,8 @@ int fmc_device_register_n(struct fmc_device **devs, int n)
 		if (!fmc->hwdev) {
 			pr_err("%s: device nr. %i has no hwdev pointer\n",
 			       __func__, i);
-			return -EINVAL;
+			ret = -EINVAL;
+			break;
 		}
 		if (fmc->flags == FMC_DEVICE_NO_MEZZANINE) {
 			dev_info(fmc->hwdev, "absent mezzanine in slot %d\n",
