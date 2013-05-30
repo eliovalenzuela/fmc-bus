@@ -293,4 +293,5 @@ static void fmc_exit(void)
 module_init(fmc_init);
 module_exit(fmc_exit);
 
+MODULE_VERSION(GIT_VERSION);
 MODULE_LICENSE("GPL");

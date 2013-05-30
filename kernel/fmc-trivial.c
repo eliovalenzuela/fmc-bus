@@ -98,4 +98,5 @@ static void t_exit(void)
 module_init(t_init);
 module_exit(t_exit);
 
+MODULE_VERSION(GIT_VERSION);
 MODULE_LICENSE("GPL and additional rights"); /* public domain */

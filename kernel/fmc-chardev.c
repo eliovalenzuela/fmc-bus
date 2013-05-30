@@ -194,4 +194,5 @@ static void fc_exit(void)
 module_init(fc_init);
 module_exit(fc_exit);
 
+MODULE_VERSION(GIT_VERSION);
 MODULE_LICENSE("GPL");
