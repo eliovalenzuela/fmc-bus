@@ -174,4 +174,5 @@ static void fwe_exit(void)
 module_init(fwe_init);
 module_exit(fwe_exit);
 
+MODULE_VERSION(GIT_VERSION);
 MODULE_LICENSE("GPL");

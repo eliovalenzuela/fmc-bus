@@ -15,8 +15,10 @@ fmc-y += fmc-sdb.o
 fmc-y += fru-parse.o
 fmc-y += fmc-dump.o
 
-# The library includes <sdb.h>, si point -I directtly there
-ccflags-y += -I$M/include/linux
+GIT_VERSION = $(shell cd $(src); git describe --dirty --long --tags)
+
+# The library includes <sdb.h>, so point -I directtly there
+ccflags-y += -I$M/include/linux -DGIT_VERSION=\"$(GIT_VERSION)\"
 
 fmc-y += ../sdb-lib/access.o
 fmc-y += ../sdb-lib/glue.o
