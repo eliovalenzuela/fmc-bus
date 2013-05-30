@@ -201,6 +201,12 @@ static void __fmc_show_sdb_tree(const struct fmc_device *fmc,
 		case sdb_type_integration:
 			printk("integration\n");
 			break;
+		case sdb_type_repo_url:
+			printk("repo-url\n");
+			break;
+		case sdb_type_synthesis:
+			printk("synthesis-info\n");
+			break;
 		case sdb_type_empty:
 			printk("empty\n");
 			break;
