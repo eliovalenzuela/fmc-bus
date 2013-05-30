@@ -29,7 +29,7 @@ static const uint8_t *dump_line(int addr, const uint8_t *line,
 	if (!prev || memcmp(line, prev, LINELEN)) {
 		pr_info("%04x: ", addr);
 		for (i = 0; i < LINELEN; ) {
-			printk("%02x", line[i]);
+			printk(KERN_CONT "%02x", line[i]);
 			i++;
 			printk(i & 3 ? " " : i & (LINELEN - 1) ? "  " : "\n");
 		}

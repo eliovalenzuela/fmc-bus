@@ -169,16 +169,16 @@ static void __fmc_show_sdb_tree(const struct fmc_device *fmc,
 		dev_info(&fmc->dev, "SDB: ");
 
 		for (j = 0; j < level; j++)
-			printk("   ");
+			printk(KERN_CONT "   ");
 		switch (r->empty.record_type) {
 		case sdb_type_interconnect:
-			printk("%08llx:%08x %.19s\n",
+			printk(KERN_CONT "%08llx:%08x %.19s\n",
 			       __be64_to_cpu(p->vendor_id),
 			       __be32_to_cpu(p->device_id),
 			       p->name);
 			break;
 		case sdb_type_device:
-			printk("%08llx:%08x %.19s (%08llx-%08llx)\n",
+			printk(KERN_CONT "%08llx:%08x %.19s (%08llx-%08llx)\n",
 			       __be64_to_cpu(p->vendor_id),
 			       __be32_to_cpu(p->device_id),
 			       p->name,
@@ -186,32 +186,33 @@ static void __fmc_show_sdb_tree(const struct fmc_device *fmc,
 			       __be64_to_cpu(c->addr_last) + base);
 			break;
 		case sdb_type_bridge:
-			printk("%08llx:%08x %.19s (bridge: %08llx)\n",
+			printk(KERN_CONT "%08llx:%08x %.19s (bridge: %08llx)\n",
 			       __be64_to_cpu(p->vendor_id),
 			       __be32_to_cpu(p->device_id),
 			       p->name,
 			       __be64_to_cpu(c->addr_first) + base);
 			if (IS_ERR(arr->subtree[i])) {
-				printk("(bridge error %li)\n",
+				printk(KERN_CONT "(bridge error %li)\n",
 				       PTR_ERR(arr->subtree[i]));
 				break;
 			}
 			__fmc_show_sdb_tree(fmc, arr->subtree[i]);
 			break;
 		case sdb_type_integration:
-			printk("integration\n");
+			printk(KERN_CONT "integration\n");
 			break;
 		case sdb_type_repo_url:
-			printk("repo-url\n");
+			printk(KERN_CONT "repo-url\n");
 			break;
 		case sdb_type_synthesis:
-			printk("synthesis-info\n");
+			printk(KERN_CONT "synthesis-info\n");
 			break;
 		case sdb_type_empty:
-			printk("empty\n");
+			printk(KERN_CONT "empty\n");
 			break;
 		default:
-			printk("UNKNOWN TYPE 0x%02x\n", r->empty.record_type);
+			printk(KERN_CONT "UNKNOWN TYPE 0x%02x\n",
+			       r->empty.record_type);
 			break;
 		}
 	}
