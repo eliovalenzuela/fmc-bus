@@ -309,7 +309,7 @@ int ff_init(void)
 		return PTR_ERR(ff);
 
 	/* If the user passed "eeprom=" as a parameter, fetch them */
-	for (i = 0;i < ff_nr_eeprom; i++) {
+	for (i = 0; i < ff_nr_eeprom; i++) {
 		if (!strlen(ff_eeprom[i]))
 			continue;
 		ret = request_firmware(&fw, ff_eeprom[i], &ff->dev);

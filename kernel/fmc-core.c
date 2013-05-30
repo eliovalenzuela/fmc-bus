@@ -79,8 +79,8 @@ static void fmc_release(struct device *dev)
  */
 
 static ssize_t fmc_read_eeprom(struct file *file, struct kobject *kobj,
-                           struct bin_attribute *bin_attr,
-                           char *buf, loff_t off, size_t count)
+			   struct bin_attribute *bin_attr,
+			   char *buf, loff_t off, size_t count)
 {
 	struct device *dev;
 	struct fmc_device *fmc;
@@ -95,8 +95,8 @@ static ssize_t fmc_read_eeprom(struct file *file, struct kobject *kobj,
 		return 0; /* EOF */
 	if (off + count > eelen)
 		count = eelen - off;
-        memcpy(buf, fmc->eeprom + off, count);
-        return count;
+	memcpy(buf, fmc->eeprom + off, count);
+	return count;
 }
 
 static struct bin_attribute fmc_eeprom_attr = {
