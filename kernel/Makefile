@@ -15,12 +15,6 @@ fmc-y += fmc-sdb.o
 fmc-y += fru-parse.o
 fmc-y += fmc-dump.o
 
-# The library includes <sdb.h>, si point -I directtly there
-ccflags-y += -I$M/include/linux
-
-fmc-y += ../sdb-lib/access.o
-fmc-y += ../sdb-lib/glue.o
-
 all modules:
 	$(MAKE) -C $(LINUX) M=$(shell /bin/pwd) modules
 
