@@ -14,7 +14,7 @@
 
 static struct fmc_driver t_drv; /* initialized later */
 
-irqreturn_t t_handler(int irq, void *dev_id)
+static irqreturn_t t_handler(int irq, void *dev_id)
 {
 	struct fmc_device *fmc = dev_id;
 
@@ -23,7 +23,7 @@ irqreturn_t t_handler(int irq, void *dev_id)
 	return IRQ_HANDLED;
 }
 
-struct fmc_gpio t_gpio[] = {
+static struct fmc_gpio t_gpio[] = {
 	{
 		.gpio = FMC_GPIO_IRQ(0),
 		.mode = GPIOF_DIR_IN,
@@ -35,7 +35,7 @@ struct fmc_gpio t_gpio[] = {
 	}
 };
 
-int t_probe(struct fmc_device *fmc)
+static int t_probe(struct fmc_device *fmc)
 {
 	int ret;
 	int index = 0;
@@ -64,7 +64,7 @@ int t_probe(struct fmc_device *fmc)
 	return ret;
 }
 
-int t_remove(struct fmc_device *fmc)
+static int t_remove(struct fmc_device *fmc)
 {
 	fmc->op->irq_free(fmc);
 	return 0;
