@@ -158,7 +158,7 @@ static DECLARE_DELAYED_WORK(ff_work, ff_work_fn);
 
 
 /* low-level i2c */
-int ff_eeprom_read(struct fmc_device *fmc, uint32_t offset,
+static int ff_eeprom_read(struct fmc_device *fmc, uint32_t offset,
 		void *buf, size_t size)
 {
 	if (offset > FF_EEPROM_SIZE)
@@ -169,7 +169,7 @@ int ff_eeprom_read(struct fmc_device *fmc, uint32_t offset,
 	return size;
 }
 
-int ff_eeprom_write(struct fmc_device *fmc, uint32_t offset,
+static int ff_eeprom_write(struct fmc_device *fmc, uint32_t offset,
 		    const void *buf, size_t size)
 {
 	if (offset > FF_EEPROM_SIZE)
@@ -200,12 +200,12 @@ static int ff_write_ee(struct fmc_device *fmc, int pos,
 }
 
 /* readl and writel do not do anything. Don't waste RAM with "base" */
-uint32_t ff_readl(struct fmc_device *fmc, int offset)
+static uint32_t ff_readl(struct fmc_device *fmc, int offset)
 {
 	return 0;
 }
 
-void ff_writel(struct fmc_device *fmc, uint32_t value, int offset)
+static void ff_writel(struct fmc_device *fmc, uint32_t value, int offset)
 {
 	return;
 }
@@ -291,7 +291,7 @@ static struct ff_dev *ff_dev_create(void)
 }
 
 /* init and exit */
-int ff_init(void)
+static int ff_init(void)
 {
 	struct ff_dev *ff;
 	const struct firmware *fw;
@@ -334,7 +334,7 @@ int ff_init(void)
 	return ret;
 }
 
-void ff_exit(void)
+static void ff_exit(void)
 {
 	if (ff_current_dev) {
 		fmc_device_unregister_n(ff_current_dev->fmc, ff_nr_dev);
