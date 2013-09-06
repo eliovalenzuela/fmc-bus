@@ -35,12 +35,14 @@
 @setchapternewpage off
 
 @set update-month February 2014
+@c the release name below is substituted at build time
+@set release __RELEASE_GIT_ID__
 
 @finalout
 
 @titlepage
 @title FMC Bus Abstraction for Linux
-@subtitle @value{update-month}
+@subtitle @value{update-month} (@value{release})
 @subtitle A kernel bus to support FMC mezzanines and carriers
 @author Alessandro Rubini for CERN (BE-CO-HT)
 @end titlepage
