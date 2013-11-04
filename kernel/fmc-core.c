@@ -154,7 +154,7 @@ int fmc_device_register_n(struct fmc_device **devs, int n)
 			ret = -EINVAL;
 			break;
 		}
-		if (fmc->flags == FMC_DEVICE_NO_MEZZANINE) {
+		if (fmc->flags & FMC_DEVICE_NO_MEZZANINE) {
 			dev_info(fmc->hwdev, "absent mezzanine in slot %d\n",
 				 fmc->slot_id);
 			continue;
