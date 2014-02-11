@@ -34,7 +34,7 @@
 
 @setchapternewpage off
 
-@set update-month May 2013
+@set update-month February 2014
 
 @finalout
 
@@ -868,7 +868,12 @@ Overwriting the @sc{eeprom} is not something you should do daily, and it is
 expected to only happen during manufacturing. For this reason, the
 module makes it unlikely for the random user to change a working @sc{eeprom}.
 
-The module takes the following measures:
+However, since the @sc{eeprom} ma include application-specific information
+other than the identification, later versions of this packages added
+write-support through @i{sysfs}. See @ref{Accessing the EEPROM}.
+
+To avoid damaging the @sc{eeprom} content, the module takes the
+following measures:
 
 @itemize @bullet
 
@@ -1621,64 +1626,31 @@ offset 0x1800 and is over-allocated to 256 bytes, according to the
 configuration file for @i{gensdbfs}.
 
 @c ==========================================================================
-@node Writing to the EEPROM
-@section Writing to the EEPROM
+@node Accessing the EEPROM
+@section Accessing the EEPROM
 
-Once you have created a binary file for your @sc{eeprom}, you can
-write it to the storage medium using the @t{fmc-write-eeprom} (See
-@ref{fmc-write-eeprom}, while relying on a carrier driver.  The
-procedure here shown here uses the @sc{spec} driver
-(@url{http://www.ohwr.org/projects/spec-sw}).
-
-The example assumes no driver is already loaded (actually, I
-unloaded them by hand as everything loads automatically at boot time
-after you installed the modules), and shows kernel messages together with
-commands. Here the prompt is @t{spusa.root#} and two @sc{spec} cards
-are plugged in the system.
-
-@smallexample
-spusa.root# insmod fmc.ko
-spusa.root# insmod spec.ko
-[13972.382818] spec 0000:02:00.0:  probe for device 0002:0000
-[13972.392773] spec 0000:02:00.0: got file "fmc/spec-init.bin", 1484404 (0x16a674) bytes
-[13972.591388] spec 0000:02:00.0: FPGA programming successful
-[13972.883011] spec 0000:02:00.0: EEPROM has no FRU information
-[13972.888719] spec 0000:02:00.0: No device_id filled, using index
-[13972.894676] spec 0000:02:00.0: No mezzanine_name found
-[13972.899863] /home/rubini/wip/spec-sw/kernel/spec-gpio.c - spec_gpio_init
-[13972.906578] spec 0000:04:00.0:  probe for device 0004:0000
-[13972.916509] spec 0000:04:00.0: got file "fmc/spec-init.bin", 1484404 (0x16a674) bytes
-[13973.115096] spec 0000:04:00.0: FPGA programming successful
-[13973.401798] spec 0000:04:00.0: EEPROM has no FRU information
-[13973.407474] spec 0000:04:00.0: No device_id filled, using index
-[13973.413417] spec 0000:04:00.0: No mezzanine_name found
-[13973.418600] /home/rubini/wip/spec-sw/kernel/spec-gpio.c - spec_gpio_init
-spusa.root# ls /sys/bus/fmc/devices
-fmc-0000  fmc-0001
-spusa.root# insmod fmc-write-eeprom.ko busid=0x0200 file=fdelay-eeprom.bin
-[14103.966259] spec 0000:02:00.0: Matching an generic driver (no ID)
-[14103.975519] spec 0000:02:00.0: programming 6155 bytes
-[14126.373762] spec 0000:02:00.0: write_eeprom: success
-[14126.378770] spec 0000:04:00.0: Matching an generic driver (no ID)
-[14126.384903] spec 0000:04:00.0: fmc_write_eeprom: no filename given: not programming
-[14126.392600] fmc_write_eeprom: probe of fmc-0001 failed with error -2
-@end smallexample
-
-@c ==========================================================================
-@node Reading back the EEPROM
-@section Reading back the EEPROM
-
-In order to read back the binary content of the @sc{eeprom} of your
-mezzanine device, the bus creates a read-only @i{sysfs} file called
+The bus creates a read-only @i{sysfs} file called
 @t{eeprom} for each mezzanine it knows about:
 
 @smallexample
    spusa.root# cd /sys/bus/fmc/devices; ls -l */eeprom
-   -r--r--r-- 1 root root 8192 Apr  9 16:53 FmcDelay1ns4cha-f001/eeprom
-   -r--r--r-- 1 root root 8192 Apr  9 17:19 fake-design-for-testing-f002/eeprom
-   -r--r--r-- 1 root root 8192 Apr  9 17:19 fake-design-for-testing-f003/eeprom
-   -r--r--r-- 1 root root 8192 Apr  9 17:19 fmc-f004/eeprom
+   -rw-r--r-- 1 root root 8192 Apr  9 16:53 FmcDelay1ns4cha-f001/eeprom
+   -rw-r--r-- 1 root root 8192 Apr  9 17:19 fake-design-for-testing-f002/eeprom
+   -rw-r--r-- 1 root root 8192 Apr  9 17:19 fake-design-for-testing-f003/eeprom
+   -rw-r--r-- 1 root root 8192 Apr  9 17:19 fmc-f004/eeprom
 @end smallexample
+
+Everybody can read the files and the superuser can also modify it,
+but the operation may on the carrier driver, if the carrier
+is unable to access the @sc{i2c} bus.  For example, the @i{spec}
+driver can access the bus only with its @i{golden} gateware: after
+a mezzanine driver reprogrammed the @sc{fpga} with a custom circuit,
+the carrier is unable to access the @sc{eeprom} and returns
+@t{ENOTSUPP}.
+
+An alternative way to write the @sc{eeprom} is the mezzanine
+driver @t{fmc-write-eeprom} (See @ref{fmc-write-eeprom}), but
+the procedure is more complex.
 
 @c ==========================================================================
 @c @node How Identification Works at Run Time
