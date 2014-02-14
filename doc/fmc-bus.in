@@ -1690,13 +1690,19 @@ This package should be portable. However I didn't test it on a wide
 variety of system.  I used it on a 32-bit x86 host, running version
 3.4 of the kernel.
 
-I verified that it compiles without any warning from version 2.6.35 up
-to 3.9, on a 32-bit x86 processor. On previous versions it fails for
-various reasons, but the backport branch we push for every release
-fixes them. The backport branch builds without warnings or error
-for 2.6.24 and 2.6.26 up to 2.6.29 (we don't care fixing it for 2.6.25).
-I don't test kernels older than 2.6.24 as that one is the olderst release
-we are using in production at the time being.
+The package is upstream since version 3.11, and I'm submitting all
+local changes to the kernel as development continues.  As of this
+release a few commits are missing from the official kernel, but any
+@i{ohwr} package that relies on @i{fmc-bus} will most likely work with
+the official kernel subsystem as well.
+
+I verified that this package builds without any warning from version 2.6.35 up
+to 3.13, on a 32-bit x86 processor. On 2.6.34 and earlier it fails for
+various reasons.
+
+Up to May 2013 each release included a backport branch that worked
+back to kernel 2.6.24, which we had in production at the time.  If you
+run a kernel older than 2.6.35, please consider
 
 @bye
 @c  LocalWords:  gnudd titlepage iftex texinfo CERN documentlanguage settitle
