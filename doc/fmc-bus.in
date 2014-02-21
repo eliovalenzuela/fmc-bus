@@ -870,7 +870,7 @@ Overwriting the @sc{eeprom} is not something you should do daily, and it is
 expected to only happen during manufacturing. For this reason, the
 module makes it unlikely for the random user to change a working @sc{eeprom}.
 
-However, since the @sc{eeprom} ma include application-specific information
+However, since the @sc{eeprom} may include application-specific information
 other than the identification, later versions of this packages added
 write-support through @i{sysfs}. See @ref{Accessing the EEPROM}.
 
@@ -1631,15 +1631,14 @@ configuration file for @i{gensdbfs}.
 @node Accessing the EEPROM
 @section Accessing the EEPROM
 
-The bus creates a read-only @i{sysfs} file called
+The bus creates a @i{sysfs} binary file called
 @t{eeprom} for each mezzanine it knows about:
 
 @smallexample
    spusa.root# cd /sys/bus/fmc/devices; ls -l */eeprom
-   -rw-r--r-- 1 root root 8192 Apr  9 16:53 FmcDelay1ns4cha-f001/eeprom
-   -rw-r--r-- 1 root root 8192 Apr  9 17:19 fake-design-for-testing-f002/eeprom
-   -rw-r--r-- 1 root root 8192 Apr  9 17:19 fake-design-for-testing-f003/eeprom
-   -rw-r--r-- 1 root root 8192 Apr  9 17:19 fmc-f004/eeprom
+   -r--r--r-- 1 root root 8192 Feb 21 12:30 FmcAdc100m14b4cha-0800/eeprom
+   -r--r--r-- 1 root root 8192 Feb 21 12:30 FmcDelay1ns4cha-0200/eeprom
+   -r--r--r-- 1 root root 8192 Feb 21 12:30 FmcDio5cha-0400/eeprom
 @end smallexample
 
 Everybody can read the files and the superuser can also modify it,
