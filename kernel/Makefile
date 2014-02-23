@@ -17,6 +17,13 @@ fmc-y += fmc-dump.o
 
 GIT_VERSION = $(shell cd $(src); git describe --dirty --long --tags)
 
+# For this CSM_VERSION, please see ohwr.org/csm documentation
+ifdef CONFIG_CSM_VERSION
+  ccflags-y += -D"CERN_SUPER_MODULE=MODULE_VERSION(\"$(CONFIG_CSM_VERSION)\")"
+else
+  ccflags-y += -DCERN_SUPER_MODULE=""
+endif
+
 # The library includes <sdb.h>, so point -I directtly there
 ccflags-y += -I$(src)/include/linux -DGIT_VERSION=\"$(GIT_VERSION)\"
 
