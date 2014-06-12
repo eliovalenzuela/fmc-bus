@@ -1,7 +1,7 @@
 
 LINUX ?= /lib/modules/$(shell uname -r)/build
 
-ccflags-y += -I$M/include
+ccflags-y += -I$(src)/include
 
 obj-m = fmc.o
 obj-m += fmc-fakedev.o
@@ -18,7 +18,7 @@ fmc-y += fmc-dump.o
 GIT_VERSION = $(shell cd $(src); git describe --dirty --long --tags)
 
 # The library includes <sdb.h>, so point -I directtly there
-ccflags-y += -I$M/include/linux -DGIT_VERSION=\"$(GIT_VERSION)\"
+ccflags-y += -I$(src)/include/linux -DGIT_VERSION=\"$(GIT_VERSION)\"
 
 fmc-y += ../sdb-lib/access.o
 fmc-y += ../sdb-lib/glue.o
