@@ -24,7 +24,7 @@ CFLAGS += -I../include/linux # for <sdb.h>
 CFLAGS += -ffunction-sections -fdata-sections
 CFLAGS += -Wno-pointer-sign
 CFLAGS += $(ENDIAN) $(LINUXINCLUDE)
-
+CFLAGS += $(EXTRACFLAGS)
 
 LIB = libsdbfs.a
 OBJS = glue.o access.o

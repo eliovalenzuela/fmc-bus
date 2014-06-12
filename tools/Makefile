@@ -1,5 +1,5 @@
 
-CFLAGS = -Wall -ggdb -O2 -I../kernel/include
+CFLAGS = -Wall -ggdb -O2 -I../kernel/include $(EXTRACFLAGS)
 
 all: fru-dump fmc-mem
 

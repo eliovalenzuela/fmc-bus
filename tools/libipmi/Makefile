@@ -2,7 +2,7 @@ OBJ=ipmi.o
 OUT=libipmi.a
 OUT_SO=libipmi.so
 
-CFLAGS+=-fPIC -shared -Wall -Wextra -ggdb
+CFLAGS+=-fPIC -shared -Wall -Wextra -ggdb $(EXTRACFLAGS)
 
 all: $(OUT) $(OUT_SO)
 
