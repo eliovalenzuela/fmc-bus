@@ -31,6 +31,7 @@ struct sdb_array {
 	struct sdb_array **subtree;	/* only valid for bridge items */
 };
 
+
 extern int fmc_scan_sdb_tree(struct fmc_device *fmc, unsigned long address);
 extern void fmc_show_sdb_tree(const struct fmc_device *fmc);
 extern signed long fmc_find_sdb_device(struct sdb_array *tree, uint64_t vendor,

@@ -9,11 +9,13 @@ obj-m += fmc-trivial.o
 obj-m += fmc-write-eeprom.o
 obj-m += fmc-chardev.o
 
+
 fmc-y = fmc-core.o
 fmc-y += fmc-match.o
 fmc-y += fmc-sdb.o
 fmc-y += fru-parse.o
 fmc-y += fmc-dump.o
+fmc-y += fmc-debug.o
 
 GIT_VERSION = $(shell cd $(src); git describe --dirty --long --tags)
 
