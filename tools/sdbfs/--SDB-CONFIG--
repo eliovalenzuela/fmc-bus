@@ -35,9 +35,6 @@ IPMI-FRU
 # used. So prepare a writable file in there. The driver looks for "fd-c".
 # The size of calibration information is around 100 bytes.
 
-fd-calib
-	position = 0x1800
+calibration
 	maxsize = 256
 	write = 1
-
-
