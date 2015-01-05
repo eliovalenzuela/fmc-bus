@@ -1,3 +1,8 @@
+# If it exists includes Makefile.specific. In this Makefile, you should put
+# specific Makefile code that you want to run before this. For example,
+# build a particular environment.
+-include Makefile.specific
+
 OBJ=ipmi.o
 OUT=libipmi.a
 OUT_SO=libipmi.so

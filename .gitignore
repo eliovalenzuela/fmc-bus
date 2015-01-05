@@ -4,3 +4,4 @@
 *.so
 *.pyc
 .*.cmd
+Makefile.specific
