@@ -12,7 +12,7 @@ all:
 	$(MAKE) -C libipmi $@
 clean:
 	$(MAKE) -C libipmi $@
-	rm $(PROGS)
+	rm -f $(PROGS)
 
 # placeholders, so ../Makefile is happy
 modules install modules_install:
