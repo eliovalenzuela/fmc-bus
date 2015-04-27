@@ -199,7 +199,8 @@ EXPORT_SYMBOL(fmc_driver_unregister);
  * When a device set is registered, all eeproms must be read
  * and all FRUs must be parsed
  */
-int fmc_device_register_n(struct fmc_device **devs, int n)
+int fmc_device_register_n_gw(struct fmc_device **devs, int n,
+			  struct fmc_gateware *gw)
 {
 	struct fmc_device *fmc, **devarray;
 	uint32_t device_id;
@@ -279,6 +280,21 @@ int fmc_device_register_n(struct fmc_device **devs, int n)
 		else
 			dev_set_name(&fmc->dev, "%s-%04x", fmc->mezzanine_name,
 				     device_id);
+
+		if (gw) {
+			/*
+			 * The carrier already know the bitstream to load
+			 * for this set of FMC mezzanines.
+			 */
+			ret = fmc->op->reprogram_raw(fmc, NULL,
+						     gw->bitstream, gw->len);
+			if (ret) {
+				dev_warn(fmc->hwdev,
+					 "Invalid gateware for FMC mezzanine\n");
+				goto out;
+			}
+		}
+
 		ret = device_add(&fmc->dev);
 		if (ret < 0) {
 			dev_err(fmc->hwdev, "Slot %i: Failed in registering "
@@ -299,9 +315,6 @@ int fmc_device_register_n(struct fmc_device **devs, int n)
 out1:
 	device_del(&fmc->dev);
 out:
-	fmc_free_id_info(fmc);
-	put_device(&fmc->dev);
-
 	kfree(devarray);
 	for (i--; i >= 0; i--) {
 		fmc_debug_exit(devs[i]);
@@ -313,7 +326,19 @@ out:
 	return ret;
 
 }
+EXPORT_SYMBOL(fmc_device_register_n_gw);
+
+int fmc_device_register_n(struct fmc_device **devs, int n)
+{
+	return fmc_device_register_n_gw(devs, n, NULL);
+}
 EXPORT_SYMBOL(fmc_device_register_n);
+
+int fmc_device_register_gw(struct fmc_device *fmc, struct fmc_gateware *gw)
+{
+	return fmc_device_register_n_gw(&fmc, 1, gw);
+}
+EXPORT_SYMBOL(fmc_device_register_gw);
 
 int fmc_device_register(struct fmc_device *fmc)
 {

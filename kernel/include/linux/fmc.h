@@ -132,6 +132,8 @@ struct fmc_operations {
 	uint32_t (*read32)(struct fmc_device *fmc, int offset);
 	void (*write32)(struct fmc_device *fmc, uint32_t value, int offset);
 	int (*validate)(struct fmc_device *fmc, struct fmc_driver *drv);
+	int (*reprogram_raw)(struct fmc_device *f, struct fmc_driver *d,
+			     void *gw, unsigned long len);
 	int (*reprogram)(struct fmc_device *f, struct fmc_driver *d, char *gw);
 	int (*irq_request)(struct fmc_device *fmc, irq_handler_t h,
 			   char *name, int flags);
@@ -144,6 +146,8 @@ struct fmc_operations {
 };
 
 /* Prefer this helper rather than calling of fmc->reprogram directly */
+int fmc_reprogram_raw(struct fmc_device *fmc, struct fmc_driver *d,
+		      void *gw, unsigned long len, int sdb_entry);
 extern int fmc_reprogram(struct fmc_device *f, struct fmc_driver *d, char *gw,
 		     int sdb_entry);
 
@@ -220,14 +224,23 @@ static inline void fmc_set_drvdata(struct fmc_device *fmc, void *data)
 	dev_set_drvdata(&fmc->dev, data);
 }
 
-/* The 4 access points */
+struct fmc_gateware {
+	void *bitstream;
+	unsigned long len;
+};
+
+/* The 5 access points */
 extern int fmc_driver_register(struct fmc_driver *drv);
 extern void fmc_driver_unregister(struct fmc_driver *drv);
 extern int fmc_device_register(struct fmc_device *tdev);
+extern int fmc_device_register_gw(struct fmc_device *tdev,
+				  struct fmc_gateware *gw);
 extern void fmc_device_unregister(struct fmc_device *tdev);
 
-/* Two more for device sets, all driven by the same FPGA */
+/* Three more for device sets, all driven by the same FPGA */
 extern int fmc_device_register_n(struct fmc_device **devs, int n);
+extern int fmc_device_register_n_gw(struct fmc_device **devs, int n,
+				    struct fmc_gateware *gw);
 extern void fmc_device_unregister_n(struct fmc_device **devs, int n);
 
 /* Internal cross-calls between files; not exported to other modules */
