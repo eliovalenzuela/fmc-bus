@@ -195,6 +195,42 @@ void fmc_driver_unregister(struct fmc_driver *drv)
 }
 EXPORT_SYMBOL(fmc_driver_unregister);
 
+static int fmc_device_validation(struct fmc_device *fmc, unsigned int i) {
+	if (!fmc) {
+		pr_warn("%s: device nr. %i does not exist\n",
+			__func__, i);
+	        return -ENODEV;
+	}
+	if (!fmc->hwdev) {
+		pr_warn("%s: device nr. %i has no hwdev pointer\n",
+			__func__, i);
+		return -ENODEV;
+	}
+	if (fmc->flags & FMC_DEVICE_NO_MEZZANINE) {
+		dev_info(fmc->hwdev, "absent mezzanine in slot %d\n",
+			 fmc->slot_id);
+		return -ENODEV;
+	}
+	if (!fmc->eeprom) {
+		dev_err(fmc->hwdev, "no eeprom provided for slot %i\n",
+			fmc->slot_id);
+		return -EINVAL;
+	}
+	if (!fmc->eeprom_addr) {
+		dev_err(fmc->hwdev, "no eeprom_addr for slot %i\n",
+			fmc->slot_id);
+		return -EINVAL;
+	}
+	if (!fmc->carrier_name || !fmc->carrier_data || \
+	    !fmc->device_id) {
+		dev_err(fmc->hwdev,
+			"device nr %i: carrier name, "
+			"data or dev_id not set\n", i);
+		return -EINVAL;
+	}
+	return 0;
+}
+
 /*
  * When a device set is registered, all eeproms must be read
  * and all FRUs must be parsed
@@ -204,7 +240,7 @@ int fmc_device_register_n_gw(struct fmc_device **devs, int n,
 {
 	struct fmc_device *fmc, **devarray;
 	uint32_t device_id;
-	int i, ret = 0;
+	int i, ret = 0, invalid = 0;
 
 	if (n < 1)
 		return 0;
@@ -217,49 +253,13 @@ int fmc_device_register_n_gw(struct fmc_device **devs, int n,
 	if (!devarray)
 		return -ENOMEM;
 
-	/* Make all other checks before continuing, for all devices */
 	for (i = 0; i < n; i++) {
 		fmc = devarray[i];
-		if (!fmc->hwdev) {
-			pr_err("%s: device nr. %i has no hwdev pointer\n",
-			       __func__, i);
-			ret = -EINVAL;
-			break;
-		}
-		if (fmc->flags & FMC_DEVICE_NO_MEZZANINE) {
-			dev_info(fmc->hwdev, "absent mezzanine in slot %d\n",
-				 fmc->slot_id);
+		ret = fmc_device_validation(fmc, i);
+		if (ret) {
+			invalid++;
 			continue;
 		}
-		if (!fmc->eeprom) {
-			dev_err(fmc->hwdev, "no eeprom provided for slot %i\n",
-				fmc->slot_id);
-			ret = -EINVAL;
-		}
-		if (!fmc->eeprom_addr) {
-			dev_err(fmc->hwdev, "no eeprom_addr for slot %i\n",
-				fmc->slot_id);
-			ret = -EINVAL;
-		}
-		if (!fmc->carrier_name || !fmc->carrier_data || \
-		    !fmc->device_id) {
-			dev_err(fmc->hwdev,
-				"deivce nr %i: carrier name, "
-				"data or dev_id not set\n", i);
-			ret = -EINVAL;
-		}
-		if (ret)
-			break;
-
-	}
-	if (ret) {
-		kfree(devarray);
-		return ret;
-	}
-
-	/* Validation is ok. Now init and register the devices */
-	for (i = 0; i < n; i++) {
-		fmc = devarray[i];
 
 		fmc->nr_slots = n; /* each slot must know how many are there */
 		fmc->devarray = devarray;
@@ -310,6 +310,13 @@ int fmc_device_register_n_gw(struct fmc_device **devs, int n,
 		fmc_dump_eeprom(fmc);
 		fmc_debug_init(fmc);
 	}
+
+	if (invalid == n) {
+		pr_err("%s: no valid FMC device to register\n", __func__);
+		kfree(devarray);
+		return -ENODEV;
+	}
+
 	return 0;
 
 out1:
@@ -317,6 +324,9 @@ out1:
 out:
 	kfree(devarray);
 	for (i--; i >= 0; i--) {
+		ret = fmc_device_validation(fmc, i);
+		if (ret)
+			continue;
 		fmc_debug_exit(devs[i]);
 		sysfs_remove_bin_file(&devs[i]->dev.kobj, &fmc_eeprom_attr);
 		device_del(&devs[i]->dev);
@@ -348,7 +358,7 @@ EXPORT_SYMBOL(fmc_device_register);
 
 void fmc_device_unregister_n(struct fmc_device **devs, int n)
 {
-	int i;
+	int i, ret;
 
 	if (n < 1)
 		return;
@@ -357,6 +367,10 @@ void fmc_device_unregister_n(struct fmc_device **devs, int n)
 	kfree(devs[0]->devarray);
 
 	for (i = 0; i < n; i++) {
+		ret = fmc_device_validation(devs[i], i);
+		if (ret)
+			continue;
+
 		fmc_debug_exit(devs[i]);
 		sysfs_remove_bin_file(&devs[i]->dev.kobj, &fmc_eeprom_attr);
 		device_del(&devs[i]->dev);
