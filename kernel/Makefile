@@ -27,7 +27,9 @@ else
 endif
 
 # The library includes <sdb.h>, so point -I directtly there
-ccflags-y += -I$(src)/include/linux -DGIT_VERSION=\"$(GIT_VERSION)\"
+# include our header before to avoid conflicts with the kernel
+LINUXINCLUDE :=  -I$(src)/include -I$(src)/include/linux $(LINUXINCLUDE)
+ccflags-y += -DGIT_VERSION=\"$(GIT_VERSION)\"
 
 fmc-y += ../sdb-lib/access.o
 fmc-y += ../sdb-lib/glue.o
