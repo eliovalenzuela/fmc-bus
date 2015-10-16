@@ -17,7 +17,7 @@ CFLAGS+=-fPIC -shared -Wall -Wextra -ggdb $(EXTRACFLAGS)
 all: $(OUT) $(OUT_SO)
 
 $(OUT): $(OBJ)
-	ar rcs $(OUT) $(OBJ)
+	$(AR) rcs $(OUT) $(OBJ)
 
 $(OUT_SO): $(OBJ)
 	$(CC) $< $(CFLAGS) -shared -fPIC -L. -Wl,-soname,$@ -o $@
