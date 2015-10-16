@@ -3,6 +3,11 @@
 # build a particular environment.
 -include Makefile.specific
 
+# include parent_common.mk for buildsystem's defines
+# It allows you to inherit an environment configuration from larger project
+REPO_PARENT=../../..
+-include $(REPO_PARENT)/parent_common.mk
+
 OBJ=ipmi.o
 OUT=libipmi.a
 OUT_SO=libipmi.so
