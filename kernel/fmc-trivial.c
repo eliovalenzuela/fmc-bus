@@ -97,4 +97,4 @@ module_exit(t_exit);
 MODULE_VERSION(GIT_VERSION);
 MODULE_LICENSE("GPL and additional rights"); /* public domain */
 
-CERN_SUPER_MODULE;
+ADDITIONAL_VERSIONS;
