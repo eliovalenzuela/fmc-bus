@@ -73,6 +73,9 @@ int ipmi_common_header_write(void)
 	ch->checksum = checksum((uint8_t *)ch, sizeof(struct common_header) - 1);
 	ret = fwrite(ch, 1, sizeof(struct common_header), f);
 
+	/* avoid warning, maybe ret will be used one day */
+	(void) ret;
+
 	return 0;
 }
 
@@ -190,6 +193,9 @@ int ipmi_board_info_area_write(void)
 		ret = fwrite(&nul, 1, sizeof(uint8_t), f);
 	ret = fwrite(&bia->checksum, 1, sizeof(uint8_t), f);
 
+	/* avoid warning, maybe ret will be used one day */
+	(void) ret;
+
 	return 0;
 }
 
@@ -219,6 +225,9 @@ int ipmi_dc_load_record_write(int end)
 		ret = fwrite(&t->rec->nominal_voltage, 1, 12, f);
 		t = t->next;
 	}
+
+	/* avoid warning, maybe ret will be used one day */
+	(void) ret;
 
 	return 0;
 }
@@ -250,6 +259,9 @@ int ipmi_dc_output_record_write(int end)
 		t = t->next;
 	}
 
+	/* avoid warning, maybe ret will be used one day */
+	(void) ret;
+
 	return 0;
 }
 
@@ -278,6 +290,9 @@ int ipmi_oem_record_write(int end)
 
 	ret = fwrite(&head, 1, sizeof(struct multirecord_header), f);
 	ret = fwrite(oem, 1, sizeof(struct oem_record), f);
+
+	/* avoid warning, maybe ret will be used one day */
+	(void) ret;
 
 	return 0;
 }

@@ -1,8 +1,15 @@
-
 DIRS = kernel tools
 
-all modules install modules_install:
-	for d in $(DIRS); do $(MAKE) -C $$d $@ || exit 1; done
+.PHONY: all clean modules install modules_install $(DIRS) sdb-lib
 
-clean:
-	for d in $(DIRS) sdb-lib; do $(MAKE) -C $$d $@ || exit 1; done
+all clean modules install modules_install: $(DIRS)
+# additionally clean sdb-lib
+clean: sdb-lib
+
+clean: TARGET = clean
+modules: TARGET = modules
+install: TARGET = install
+modules_install: TARGET = modules_install
+
+$(DIRS) sdb-lib:
+	$(MAKE) -C $@ $(TARGET)

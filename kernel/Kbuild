@@ -1,0 +1,33 @@
+ccflags-y += -I$(src)/include
+
+obj-m = fmc.o
+obj-m += fmc-fakedev.o
+obj-m += fmc-trivial.o
+obj-m += fmc-write-eeprom.o
+obj-m += fmc-chardev.o
+
+
+fmc-y = fmc-core.o
+fmc-y += fmc-match.o
+fmc-y += fmc-sdb.o
+fmc-y += fru-parse.o
+fmc-y += fmc-dump.o
+fmc-y += fmc-debug.o
+
+# add versions of supermodule. It is useful when fmc-bus is included as sub-module
+# of a bigger project that we want to track
+ifdef CONFIG_SUPER_REPO
+ifdef CONFIG_SUPER_REPO_VERSION
+SUBMODULE_VERSIONS += MODULE_INFO(version_$(CONFIG_SUPER_REPO),\"$(CONFIG_SUPER_REPO_VERSION)\");
+endif
+endif
+
+ccflags-y += -DADDITIONAL_VERSIONS="$(SUBMODULE_VERSIONS)"
+
+# The library includes <sdb.h>, so point -I directtly there
+# include our header before to avoid conflicts with the kernel
+LINUXINCLUDE :=  -I$(src)/include -I$(src)/include/linux $(LINUXINCLUDE)
+ccflags-y += -DGIT_VERSION=\"$(GIT_VERSION)\"
+
+fmc-y += ../sdb-lib/access.o
+fmc-y += ../sdb-lib/glue.o
