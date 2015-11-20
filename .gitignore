@@ -5,3 +5,5 @@
 *.pyc
 .*.cmd
 Makefile.specific
+*.tmp
+.*.o.d
