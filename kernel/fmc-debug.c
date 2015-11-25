@@ -24,6 +24,7 @@ static char *__strip_trailing_space(char *buf, char *str, int len)
 	int i = len - 1;
 
 	memcpy(buf, str, len);
+	buf[len] = '\0';
 	while(i >= 0 && buf[i] == ' ')
 		buf[i--] = '\0';
 	return buf;
