@@ -24,7 +24,7 @@ OBJDUMP         = $(CROSS_COMPILE)objdump
 ENDIAN := $(shell ./check-endian $(CC))
 
 CFLAGS = -Wall -ggdb -O2
-CFLAGS += -I../include/linux # for <sdb.h>
+CFLAGS += -I../kernel/include/linux # for <sdb.h>
 CFLAGS += -ffunction-sections -fdata-sections
 CFLAGS += -Wno-pointer-sign
 CFLAGS += $(ENDIAN) $(LINUXINCLUDE)
