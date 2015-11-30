@@ -3,6 +3,8 @@
 #include <string.h>
 #include <stdlib.h>
 
+const char * const libipmi_version_s = "libipmi version: " GIT_VERSION;
+
 static FILE *f = NULL;
 
 struct common_header *ch = NULL;
