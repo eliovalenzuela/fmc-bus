@@ -78,4 +78,6 @@ static inline uint64_t ntohll(uint64_t ll)
 	return htonll(ll);
 }
 
+extern const char * const libsdbfs_version_s;
+
 #endif /* __LIBSDBFS_H__ */

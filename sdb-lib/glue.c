@@ -12,6 +12,7 @@
 #include "libsdbfs.h"
 
 static struct sdbfs *sdbfs_list;
+const char * const libsdbfs_version_s = "libsdbfs version: " GIT_VERSION;
 
 /* All fields unused by the caller are expected to be zeroed */
 int sdbfs_dev_create(struct sdbfs *fs, int verbose)

@@ -27,12 +27,15 @@ OBJDUMP         = $(CROSS_COMPILE)objdump
 # calculate endianness at compile time
 ENDIAN := $(shell ./check-endian $(CC))
 
+GIT_VERSION := $(shell git describe --dirty --long --tags)
+
 CFLAGS = -Wall -ggdb -O2
 CFLAGS += -I../kernel/include/linux # for <sdb.h>
 CFLAGS += -ffunction-sections -fdata-sections
 CFLAGS += -Wno-pointer-sign
 CFLAGS += $(ENDIAN) $(LINUXINCLUDE)
 CFLAGS += $(EXTRACFLAGS)
+CFLAGS += -DGIT_VERSION="\"$(GIT_VERSION)\""
 
 LIB = libsdbfs.a
 OBJS = glue.o access.o
