@@ -136,4 +136,5 @@ int ipmi_oem_record_write(int);
 unsigned char *ipmi_get_internal_use_data(char *data, int *l);
 int ipmi_get_mfg_date(char *data);
 
+extern const char * const libipmi_version_s;
 #endif

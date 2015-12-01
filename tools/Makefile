@@ -8,7 +8,9 @@
 REPO_PARENT=../..
 -include $(REPO_PARENT)/parent_common.mk
 
+GIT_VERSION := $(shell git describe --dirty --long --tags)
 CFLAGS = -Wall -ggdb -O2 -I../kernel/include $(EXTRACFLAGS)
+CFLAGS += -DGIT_VERSION="\"$(GIT_VERSION)\""
 PROGS = fru-dump fmc-mem
 
 all: $(PROGS)

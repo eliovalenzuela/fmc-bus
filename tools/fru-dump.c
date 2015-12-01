@@ -18,9 +18,16 @@
 
 #include "../kernel/fru-parse.c" /* Aaaargh!!!!! horrible hack... */
 
+static char git_version[] = "git version: " GIT_VERSION;
+
 void *fru_alloc(size_t size)
 {
 	return malloc(size);
+}
+
+static void print_version(char *pname)
+{
+	printf("%s %s\n", pname, git_version);
 }
 
 #define EEPROM_SIZE 8192
@@ -35,8 +42,13 @@ int main(int argc, char **argv)
 	FILE *f = NULL;
 	int i, err = 0;
 
+	if ((argc == 2) && (!strcmp(argv[1], "-V"))) {
+		print_version(argv[0]);
+		exit(0);
+	}
+
 	if (argc < 2) {
-		fprintf(stderr, "%s: Use \"%s <fru-image> [...]\"\n",
+		fprintf(stderr, "%s: Use \"%s [-V] <fru-image> [...]\"\n",
 			argv[0], argv[0]);
 		exit(1);
 	}

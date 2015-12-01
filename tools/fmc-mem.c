@@ -17,12 +17,15 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 
+static char git_version[] = "git version: " GIT_VERSION;
+
 static void help(char *prgname)
 {
 	fprintf(stderr, "%s: use "
-		"\"%s <device> <addr> [<value>] [+<nbytes>]\"\n"
+		"\"%s -V <device> <addr> [<value>] [+<nbytes>]\"\n"
 		"     <device> is a file name, all others are hex numbers\n"
-		"     bursts of \"nbytes\" use stdin/stdout (value ignored)\n",
+		"     bursts of \"nbytes\" use stdin/stdout (value ignored)\n"
+		"     -V version\n",
 		prgname, prgname);
 	exit(1);
 }
@@ -67,6 +70,11 @@ static void r_loop(int fd, char **argv, int nbytes)
 	exit(0);
 }
 
+static void print_version(char *pname)
+{
+	printf("%s %s\n", pname, git_version);
+}
+
 int main(int argc, char **argv)
 {
 	int fd;
@@ -74,6 +82,11 @@ int main(int argc, char **argv)
 	uint32_t reg;
 	int dowrite = 0, doloop = 0;
 	char c;
+
+	if ((argc == 2) && (!strcmp(argv[1], "-V"))) {
+		print_version(argv[0]);
+		exit(0);
+	}
 
 	if (argc < 3 || argv[1][0] == '-') /* -h, --help, whatever */
 		help(argv[0]);

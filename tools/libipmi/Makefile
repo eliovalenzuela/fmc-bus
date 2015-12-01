@@ -12,7 +12,9 @@ OBJ=ipmi.o
 OUT=libipmi.a
 OUT_SO=libipmi.so
 
+GIT_VERSION := $(shell git describe --dirty --long --tags)
 CFLAGS+=-fPIC -shared -Wall -Wextra -ggdb $(EXTRACFLAGS)
+CFLAGS += -DGIT_VERSION="\"$(GIT_VERSION)\""
 
 all: $(OUT) $(OUT_SO)
 
