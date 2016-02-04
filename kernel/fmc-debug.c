@@ -84,7 +84,11 @@ static void fmc_sdb_dump_recursive(struct fmc_device *fmc, struct seq_file *s,
 			fmc_sdb_dump_recursive(fmc, s, arr->subtree[i]);
 			break;
 		case sdb_type_integration:
-			seq_printf(s, "integration\n");
+			p = &r->integr.product;
+			seq_printf(s, "Integration %08llx:%08x %.19s v%d\n",
+				   __be64_to_cpu(p->vendor_id),
+				   __be32_to_cpu(p->device_id),
+				   p->name, __be32_to_cpu(p->version));
 			break;
 		case sdb_type_repo_url:
 			seq_printf(s, "Synthesis repository: %s\n",
